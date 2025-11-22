@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday, My Love! ❤️</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollToPlugin.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Patrick+Hand&family=Kalam:wght@300;400&family=Parisienne&family=Bebas+Neue&family=Pacifico&display=swap');
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            font-family: 'Crimson Text', serif;
+            min-height: 100vh;
+            touch-action: manipulation;
+            background: linear-gradient(135deg, #f9a8d4, #f3e8ff);
+            position: relative;
+        }
+
+        /* Floating particles background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        #app {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            overflow-x: hidden;
+            z-index: 1;
+        }
+
+        #content {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        .step {
+            position: absolute;
+            width: 100%;
+            max-width: 800px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .step.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: all;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #ec4899, #f43f5e);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 6px 20px rgba(236, 72, 153, 0.4);
+            transition: all 0.4s ease;
+            font-family: 'Crimson Text', serif;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .btn:hover:before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(236, 72, 153, 0.5);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, #ec4899, #f43f5e, #f59e0b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+
+        .heart-beat {
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0% {
+                transform: scale(1);
+            }
+
+            25% {
+                transform: scale(1.1);
+            }
+
+            50% {
+                transform: scale(1);
+            }
+
+            75% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .emoji {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            display: inline-block;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+        }
+
+        .reason-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 10px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reason-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #ec4899, #f43f5e);
+        }
+
+        .reason-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            background: #fffafa;
+        }
+
+        .reason-card:focus-within {
+            outline: 2px solid #ec4899;
+            outline-offset: 4px;
+        }
+
+        #progress-container {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            max-width: 300px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ec4899, #f43f5e);
+            border-radius: 3px;
+            transition: width 0.7s ease;
+            box-shadow: 0 0 10px rgba(236, 72, 153, 0.5);
+        }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        /* Style for the Wish Box */
+        #wish-box-container {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px dashed #f43f5e;
+            padding: 20px;
+            border-radius: 20px;
+            margin-top: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #wish-box-container:before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 70%);
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+        }
+
+        #wish-box-container.sealed:before {
+            opacity: 1;
+        }
+
+        #wish-input {
+            width: 100%;
+            height: 100px;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            resize: vertical;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            font-family: 'Kalam', cursive;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        #wish-input:focus {
+            outline: none;
+            border-color: #ec4899;
+            box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.2);
+        }
+        
+        #wish-confirmation {
+            margin-top: 15px;
+            font-weight: bold;
+            color: #10b981;
+            transition: opacity 0.7s ease;
+            font-size: 1rem;
+        }
+
+        /* Notebook Style for Step 6 */
+        #notebook-page {
+            max-width: 500px; 
+            margin: 0 auto;
+            border-left: 6px solid #a0a0ff;
+            line-height: 1.8;
+            padding-left: 30px;
+            font-family: 'Patrick Hand', cursive;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.25);
+            background-image: linear-gradient(to bottom, #eee 1px, transparent 1px);
+            background-size: 100% 30px;
+            text-align: left;
+            position: relative;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        #notebook-page:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, transparent 50%, #f0f0f0 50%);
+        }
+
+        #notebook-page:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 20px;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 50%;
+            transform: translate(10px, 10px);
+        }
+
+        #typed-text {
+            color: #333;
+            border-right: 2px solid #ec4899;
+            animation: blink-caret 0.75s step-end infinite;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 1.2rem;
+            min-height: 180px;
+        }
+        
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #ec4899 }
+        }
+        
+        /* Voice visualization */
+        .voice-visualizer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            height: 40px;
+        }
+        
+        .voice-bar {
+            width: 5px;
+            height: 12px;
+            background: linear-gradient(to top, #3b82f6, #60a5fa);
+            margin: 0 3px;
+            border-radius: 3px;
+            animation: voice-wave 1.4s ease-in-out infinite;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+        
+        .voice-bar:nth-child(1) { animation-delay: 0.0s; height: 20px; }
+        .voice-bar:nth-child(2) { animation-delay: 0.2s; height: 30px; }
+        .voice-bar:nth-child(3) { animation-delay: 0.4s; height: 25px; }
+        .voice-bar:nth-child(4) { animation-delay: 0.6s; height: 35px; }
+        .voice-bar:nth-child(5) { animation-delay: 0.8s; height: 28px; }
+        
+        @keyframes voice-wave {
+            0%, 100% { 
+                height: 12px; 
+                opacity: 0.7;
+            }
+            50% { 
+                height: 40px; 
+                opacity: 1;
+            }
+        }
+
+        /* Romantic title styling */
+        .romantic-title {
+            font-family: 'Pacifico', cursive;
+            text-shadow: 0 2px 10px rgba(236, 72, 153, 0.3);
+        }
+
+        /* Birthday title styling - more mobile-friendly */
+        .birthday-title {
+            font-family: 'Bebas Neue', cursive;
+            text-shadow: 0 2px 10px rgba(236, 72, 153, 0.3);
+            letter-spacing: 1px;
+        }
+
+        /* Sound wave animation for buttons */
+        .sound-wave {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            opacity: 0;
+        }
+
+        .btn.playing .sound-wave {
+            animation: sound-wave 1.5s infinite;
+        }
+
+        @keyframes sound-wave {
+            0% {
+                width: 30px;
+                height: 30px;
+                opacity: 0.7;
+            }
+            100% {
+                width: 60px;
+                height: 60px;
+                opacity: 0;
+            }
+        }
+
+        /* Floating hearts animation */
+        .floating-heart {
+            position: fixed;
+            color: #ec4899;
+            font-size: 20px;
+            pointer-events: none;
+            animation: float-up 4s ease-in forwards;
+            z-index: 1000;
+            opacity: 0;
+        }
+
+        @keyframes float-up {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-200px) rotate(20deg);
+                opacity: 0;
+            }
+        }
+
+        /* Signature styling */
+        .signature {
+            font-family: 'Parisienne', cursive;
+            font-size: 1.8rem;
+            color: #ec4899;
+            margin-top: 15px;
+            display: inline-block;
+            position: relative;
+        }
+
+        .signature:after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ec4899, transparent);
+        }
+        
+        /* Letter image styling */
+        .letter-image {
+            width: 100%;
+            max-width: 200px;
+            height: auto;
+            border-radius: 10px;
+            margin: 20px auto;
+            display: block;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 3px solid #fff;
+            transition: transform 0.3s ease;
+        }
+        
+        .letter-image:hover {
+            transform: scale(1.03);
+        }
+        
+        /* Mobile-specific adjustments */
+        @media (max-width: 768px) {
+            .step {
+                padding: 20px;
+            }
+            
+            .emoji {
+                font-size: 3rem;
+            }
+            
+            h1 {
+                font-size: 2.5rem !important;
+            }
+            
+            h2 {
+                font-size: 2rem !important;
+            }
+            
+            h3 {
+                font-size: 1.5rem !important;
+            }
+            
+            p {
+                font-size: 1rem !important;
+            }
+            
+            .btn {
+                padding: 12px 24px;
+                font-size: 14px;
+            }
+            
+            #typed-text {
+                font-size: 1.1rem;
+            }
+            
+            .reason-card {
+                padding: 15px;
+            }
+            
+            #notebook-page {
+                padding-left: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Floating particles background -->
+    <div class="particles" id="particles"></div>
+
+    <div id="app">
+        <div id="canvas-container"></div>
+
+        <div id="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+
+        <div id="content">
+            <div class="step active" id="step1">
+                <div class="emoji heart-beat">❤️</div>
+                <h1 class="text-5xl md:text-6xl font-bold mb-8 text-gradient birthday-title">HAPPY BIRTHDAY! 🥳</h1>
+                <p class="text-xl text-gray-700 mb-8">This is your day! Let's celebrate with something special just for you...</p>
+                <button class="btn" id="start-btn">
+                    Open Your Gift
+                    <div class="sound-wave"></div>
+                </button>
+            </div>
+
+            <div class="step" id="step2">
+                <div class="emoji">🎉</div>
+                <h2 class="text-4xl md:text-5xl font-bold mb-8 text-gradient romantic-title">To My Beautiful special person</h2>
+                <p class="text-lg text-gray-700 mb-8 leading-relaxed">
+                    On your special day, I want you to know how amazing you are. Your smile brightens my world, your
+                    laughter is my favorite melody, and your presence makes every moment magical.
+                </p>
+                <button class="btn" id="next-btn-2">
+                    What makes you special?
+                    <div class="sound-wave"></div>
+                </button>
+            </div>
+
+            <div class="step" id="step3">
+                <h2 class="text-4xl md:text-5xl font-bold mb-10 text-gradient romantic-title">Here's why you're incredible</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+                    <div class="reason-card">
+                        <div class="emoji text-3xl">✨</div>
+                        <h3 class="text-xl font-bold mb-2 text-pink-600">Your Kindness</h3>
+                        <p class="text-gray-700">The way you care about others is truly inspiring. You have the biggest
+                            heart.</p>
+                    </div>
+                    <div class="reason-card">
+                        <div class="emoji text-3xl">😊</div>
+                        <h3 class="text-xl font-bold mb-2 text-pink-600">Your Smile</h3>
+                        <p class="text-gray-700">It lights up every room you enter and stays in my mind all day.</p>
+                    </div>
+                    <div class="reason-card">
+                        <div class="emoji text-3xl">🌟</div>
+                        <h3 class="text-xl font-bold mb-2 text-pink-600">Your Spirit</h3>
+                        <p class="text-gray-700">Your passion and energy are contagious. You make life exciting!</p>
+                    </div>
+                </div> 
+                <p class="text-xl font-semibold text-pink-600 mt-8 mb-4">
+                     i would continue more and more as the reasons are endless......
+                </p> 
+                <button class="btn" id="next-btn-3">
+                    A Little Surprise
+                    <div class="sound-wave"></div>
+                </button>
+            </div>
+
+            <div class="step" id="step4">
+                <div class="emoji">📸</div>
+                <h2 class="text-4xl md:text-5xl font-bold mb-8 text-gradient romantic-title">Remember When...</h2>
+                <div class="bg-gradient-to-r from-pink-200 to-rose-200 rounded-xl p-8 mb-8 flex flex-col justify-center items-center">
+                    <img src="crush.webp" height="180" width="180" 
+                         alt="A photograph representing our favorite memory together" 
+                         class="rounded-lg shadow-lg" />
+                    <p class="text-lg text-gray-700 italic mt-2">(Imagine our favorite memory together here)</p>
+                </div>
+                <p class="text-lg text-gray-700 mb-8 leading-relaxed">
+                    Every moment with you becomes a cherished memory. Whether we're laughing together or just enjoying
+                    the silence, time with you is always special.
+                </p>
+                <button class="btn" id="next-btn-4">
+                    The Final Celebration
+                    <div class="sound-wave"></div>
+                </button>
+            </div>
+
+            <div class="step" id="step5">
+                <div class="emoji">🎁</div>
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 text-gradient romantic-title">Make Your Birthday Wish!</h2>
+                
+                <p class="text-lg text-gray-700 mb-6 leading-relaxed">
+                    Before we celebrate, take a moment to write down your biggest wish or goal for your new year. I'll keep it safe!
+                </p>
+
+                <div id="wish-box-container">
+                    <textarea id="wish-input" placeholder="My wish for the next year is..." rows="4"></textarea>
+                    <button class="btn" id="seal-wish-btn">
+                        Seal the Wish ✨
+                        <div class="sound-wave"></div>
+                    </button>
+                    <p id="wish-confirmation" style="opacity: 0;">Wish Confirmed! I'll do my best to help make it happen! ❤️</p>
+                </div>
+                <p class="text-xl font-semibold text-pink-600 mt-8 mb-4">
+                    Now for the biggest surprise...
+                </p>
+                <button class="btn" id="confetti-btn">
+                    Make it Rain Hearts!
+                    <div class="sound-wave"></div>
+                </button>
+                <p class="mt-8 text-gray-500">Made with ❤️ just for you</p>
+            </div>
+
+            <div class="step" id="step6">
+                <div class="emoji">📝</div>
+                <div id="notebook-page" class="bg-white p-8 rounded-lg shadow-2xl border-t-8 border-pink-400 relative">
+                    <p class="text-xs text-gray-500 mb-4 border-b border-gray-200 pb-1">A Note From The Heart</p>
+                    <h3 class="text-3xl font-bold mb-4 text-pink-700 text-left romantic-title">A Promise for Your New Year</h3>
+                    
+                    <!-- Letter image - replace the src with your image URL -->
+                    <img src="image1.jpg" alt="A special memory" class="letter-image" id="letter-image">
+                    
+                    <div id="typed-text" class="text-gray-800 min-h-[180px]"></div>
+                    <div class="signature mt-6">Forever yours</div>
+                </div>
+                <p class="mt-8 text-gray-600 font-semibold">
+                    (Listen closely for the message to be fully revealed)
+                </p>
+                <div class="voice-visualizer" id="voice-visualizer" style="display: none;">
+                    <div class="voice-bar"></div>
+                    <div class="voice-bar"></div>
+                    <div class="voice-bar"></div>
+                    <div class="voice-bar"></div>
+                    <div class="voice-bar"></div>
+                </div>
+                <button id="replay-voice-btn" class="btn" style="display: none; margin-top: 20px;">
+                    🔊 Replay Message
+                    <div class="sound-wave"></div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="background-music" loop>
+        <source src="shaniatwain.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        // --- CREATE FLOATING PARTICLES ---
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 20; // Reduced for better mobile performance
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Random size
+                const size = Math.random() * 6 + 2; // Smaller particles for mobile
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                
+                // Random animation delay
+                particle.style.animationDelay = `${Math.random() * 15}s`;
+                particle.style.animationDuration = `${15 + Math.random() * 15}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        createParticles();
+
+        // --- CREATE FLOATING HEARTS ---
+        function createFloatingHeart(x, y) {
+            const heart = document.createElement('div');
+            heart.className = 'floating-heart';
+            heart.textContent = '❤️';
+            heart.style.left = `${x}px`;
+            heart.style.top = `${y}px`;
+            document.body.appendChild(heart);
+            
+            // Remove after animation completes
+            setTimeout(() => {
+                heart.remove();
+            }, 4000);
+        }
+
+        // --- THREE.JS HEART ANIMATION CODE ---
+        const container = document.getElementById('canvas-container');
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 30;
+
+        const x = 0, y = 0;
+        const heartShape = new THREE.Shape();
+        heartShape.moveTo(x + 0.5, y + 0.5);
+        heartShape.bezierCurveTo(x + 0.5, y + 0.5, x + 1, y, x, y);
+        heartShape.bezierCurveTo(x - 1, y, x - 1, y + 1.5, x - 1, y + 1.5);
+        heartShape.bezierCurveTo(x - 1, y + 2.5, x + 0.5, y + 3.5, x + 0.5, y + 3.5);
+        heartShape.bezierCurveTo(x + 0.5, y + 3.5, x + 2, y + 2.5, x + 2, y + 1.5);
+        heartShape.bezierCurveTo(x + 2, y + 1.5, x + 2, y, x + 1, y);
+        heartShape.bezierCurveTo(x + 0.5, y, x + 0.5, y + 0.5, x + 0.5, y + 0.5);
+
+        const extrudeSettings = {
+            depth: 0.5,
+            bevelEnabled: true,
+            bevelSegments: 3,
+            bevelSize: 0.2,
+            bevelThickness: 0.3
+        };
+
+        const heartGeometry = new THREE.ExtrudeGeometry(heartShape, extrudeSettings);
+        const hearts = [];
+        const colors = [
+            0xff6b6b, 0xff8e8e, 0xffb3b3, 0xffd8d8,
+            0xff9e9e, 0xffc1c1, 0xff6b8e, 0xff8eb3
+        ];
+
+        // Reduce number of hearts for better mobile performance
+        const heartCount = window.innerWidth < 768 ? 15 : 30;
+        
+        for (let i = 0; i < heartCount; i++) {
+            const material = new THREE.MeshPhongMaterial({
+                color: colors[Math.floor(Math.random() * colors.length)],
+                emissive: 0xff0000,
+                emissiveIntensity: 0.1,
+                shininess: 100,
+                transparent: true,
+                opacity: 0.9
+            });
+
+            const heart = new THREE.Mesh(heartGeometry, material);
+
+            heart.position.x = (Math.random() - 0.5) * 50;
+            heart.position.y = (Math.random() - 0.5) * 50;
+            heart.position.z = (Math.random() - 0.5) * 50;
+
+            const scale = Math.random() * 0.8 + 0.5;
+            heart.scale.set(scale, scale, scale);
+
+            heart.rotation.x = Math.random() * Math.PI;
+            heart.rotation.y = Math.random() * Math.PI;
+
+            heart.userData = {
+                speedX: Math.random() * 0.02 - 0.01,
+                speedY: Math.random() * 0.02 - 0.01,
+                speedZ: Math.random() * 0.02 - 0.01,
+                rotationSpeedX: Math.random() * 0.01,
+                rotationSpeedY: Math.random() * 0.01,
+                originalX: heart.position.x,
+                originalY: heart.position.y,
+                originalZ: heart.position.z,
+                floatDistance: 2 + Math.random() * 3
+            };
+
+            scene.add(heart);
+            hearts.push(heart);
+        }
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(1, 1, 1);
+        scene.add(directionalLight);
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (document.hidden) return;
+
+            hearts.forEach(heart => {
+                const time = Date.now() * 0.001;
+                heart.position.x = heart.userData.originalX + Math.sin(time * heart.userData.speedX * 10) * heart.userData.floatDistance;
+                heart.position.y = heart.userData.originalY + Math.sin(time * heart.userData.speedY * 10) * heart.userData.floatDistance;
+                heart.position.z = heart.userData.originalZ + Math.sin(time * heart.userData.speedZ * 10) * heart.userData.floatDistance;
+
+                heart.rotation.x += heart.userData.rotationSpeedX;
+                heart.rotation.y += heart.userData.rotationSpeedY;
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+        // --- END THREE.JS HEART ANIMATION CODE ---
+
+
+        // --- STEP NAVIGATION AND NEW WISH LOGIC ---
+        let currentStep = 1;
+        const totalSteps = 6;
+        
+        // Get Audio Elements
+        const backgroundMusic = document.getElementById('background-music');
+        
+        // Get Wish Box Elements
+        const wishInput = document.getElementById('wish-input');
+        const sealWishBtn = document.getElementById('seal-wish-btn');
+        const wishConfirmation = document.getElementById('wish-confirmation');
+        const wishBoxContainer = document.getElementById('wish-box-container');
+
+        // Typed Text Element and Message
+        const typedTextElement = document.getElementById('typed-text');
+        // Updated with your new letter text
+        const finalMessage = "My dearest,\n\nI've spent hours trying to come up with something nice and creative to say to you today, but nothing sounded more true than wishing you a happy day, because happiness is the key word for success, contentment, joy and achievement.\n\nToday I wish a lot of things. I want you to receive this letter as a confirmation of my so often declared love. I want your soul to be filled with the hope to face the many years to come. I want you to have all the reasons in the world to smile and none to be sad. I want you to have the best, always.\n\nAs you begin this new year, know that I'm right here beside you. You are my greatest adventure. May your birthday wish be the first of many beautiful things to come. Every day with you is a gift. Forever yours,\n\n[Tyson]";
+        
+        // Voice narration elements
+        let currentUtterance = null;
+        const replayVoiceBtn = document.getElementById('replay-voice-btn');
+        const voiceVisualizer = document.getElementById('voice-visualizer');
+
+
+        function updateProgressBar() {
+            const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+        }
+
+        function showStep(stepNumber) {
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active');
+            });
+
+            document.getElementById(`step${stepNumber}`).classList.add('active');
+
+            // Scroll to top on new step
+            gsap.to(window, {
+                duration: 0.7,
+                scrollTo: 0,
+                ease: "power2.out"
+            });
+
+            updateProgressBar();
+
+            if (stepNumber === 5) {
+                document.getElementById('confetti-btn').classList.add('animate-pulse');
+            }
+        }
+        
+        // Function to get a realistic male voice
+        function getMaleVoice() {
+            const voices = window.speechSynthesis.getVoices();
+            
+            // Try to find a male voice with a natural, realistic quality
+            const preferredVoices = voices.filter(voice => 
+                (voice.lang.includes('en') || voice.lang.includes('EN')) && 
+                (voice.name.includes('Male') || 
+                 voice.name.includes('Daniel') || 
+                 voice.name.includes('Alex') || 
+                 voice.name.includes('Aaron') || 
+                 voice.name.includes('David') || 
+                 voice.name.includes('Mark') ||
+                 voice.name.includes('James') ||
+                 voice.name.includes('Google') ||
+                 voice.name.includes('Natural') ||
+                 voice.name.includes('Premium'))
+            );
+            
+            // If we found preferred voices, use the first one
+            if (preferredVoices.length > 0) {
+                return preferredVoices[0];
+            }
+            
+            // Otherwise, just use any English voice
+            const englishVoices = voices.filter(voice => 
+                voice.lang.includes('en') || voice.lang.includes('EN')
+            );
+            
+            if (englishVoices.length > 0) {
+                return englishVoices[0];
+            }
+            
+            // If no English voices, use the first available voice
+            return voices[0];
+        }
+        
+        // --- Typing and Voice Animation Logic ---
+        function startTypingAnimation() {
+            typedTextElement.textContent = ''; // Clear content first
+            typedTextElement.style.borderRight = '2px solid #ec4899'; // Show cursor
+            
+            // Show replay button after voice finishes
+            replayVoiceBtn.style.display = 'none';
+            
+            // Show voice visualizer
+            voiceVisualizer.style.display = 'flex';
+
+            // 1. Text-to-Speech Setup
+            if ('speechSynthesis' in window) {
+                // Cancel any ongoing speech
+                window.speechSynthesis.cancel();
+                
+                // Break the message into natural segments with pauses for a realistic male voice
+                // Updated with your new letter text
+                const segments = [
+                    { text: "My dearest,", pause: 800, rate: 0.9, pitch: 0.85 },
+                    { text: "I've spent hours trying to come up with something nice and creative to say to you today,", pause: 600, rate: 0.85, pitch: 0.8 },
+                    { text: "but nothing sounded more true than wishing you a happy day,", pause: 700, rate: 0.85, pitch: 0.85 },
+                    { text: "because happiness is the key word for success, contentment, joy and achievement.", pause: 900, rate: 0.8, pitch: 0.9 },
+                    { text: "Today I wish a lot of things.", pause: 800, rate: 0.85, pitch: 0.8 },
+                    { text: "I want you to receive this letter as a confirmation of my so often declared love.", pause: 900, rate: 0.85, pitch: 0.85 },
+                    { text: "I want your soul to be filled with the hope to face the many years to come.", pause: 800, rate: 0.9, pitch: 0.85 },
+                    { text: "I want you to have all the reasons in the world to smile and none to be sad.", pause: 800, rate: 0.85, pitch: 0.8 },
+                    { text: "I want you to have the best, always.", pause: 900, rate: 0.9, pitch: 0.85 },
+                    { text: "As you begin this new year, know that I'm right here beside you.", pause: 800, rate: 0.85, pitch: 0.85 },
+                    { text: "You are my greatest adventure.", pause: 900, rate: 0.8, pitch: 0.9 },
+                    { text: "May your birthday wish be the first of many beautiful things to come.", pause: 800, rate: 0.85, pitch: 0.8 },
+                    { text: "Every day with you is a gift.", pause: 700, rate: 0.9, pitch: 0.85 },
+                    { text: "Forever yours,", pause: 900, rate: 0.85, pitch: 0.8 },
+                    { text: "Tyson", pause: 0, rate: 0.9, pitch: 0.85 }
+                ];
+                
+                // Lower background music during voice narration (increased from 0.08 to 0.15)
+                const originalVolume = backgroundMusic.volume;
+                backgroundMusic.volume = 0.15; // Increased volume for better balance
+                
+                // Get a realistic male voice
+                const maleVoice = getMaleVoice();
+                
+                // Function to speak segments sequentially
+                let segmentIndex = 0;
+                
+                function speakNextSegment() {
+                    if (segmentIndex >= segments.length) {
+                        // All segments spoken
+                        console.log("Voice narration ended");
+                        // Restore background music volume
+                        backgroundMusic.volume = originalVolume;
+                        // Hide voice visualizer
+                        voiceVisualizer.style.display = 'none';
+                        // Show replay button
+                        replayVoiceBtn.style.display = 'inline-block';
+                        return;
+                    }
+                    
+                    const segment = segments[segmentIndex];
+                    const utterance = new SpeechSynthesisUtterance(segment.text);
+                    
+                    // Set voice
+                    utterance.voice = maleVoice;
+                    
+                    // Set realistic male speech parameters
+                    utterance.rate = segment.rate;
+                    utterance.pitch = segment.pitch;
+                    utterance.volume = 1.0; // Maximum volume
+                    
+                    // Add subtle variations for more natural speech
+                    // Add a slight breath effect before important phrases
+                    if (segmentIndex === 0 || segmentIndex === 4 || segmentIndex === 9 || segmentIndex === 12) {
+                        utterance.text = "..." + utterance.text;
+                    }
+                    
+                    // Event handlers
+                    utterance.onstart = () => {
+                        console.log(`Speaking segment: "${segment.text}"`);
+                    };
+                    
+                    utterance.onend = () => {
+                        // Move to next segment after pause
+                        segmentIndex++;
+                        setTimeout(speakNextSegment, segment.pause);
+                    };
+                    
+                    utterance.onerror = (event) => {
+                        console.error("Speech synthesis error:", event.error);
+                        // Try to continue with next segment
+                        segmentIndex++;
+                        setTimeout(speakNextSegment, 500);
+                    };
+                    
+                    // Speak the current segment
+                    try {
+                        window.speechSynthesis.speak(utterance);
+                    } catch (error) {
+                        console.error("Error starting speech synthesis:", error);
+                        // Try to continue with next segment
+                        segmentIndex++;
+                        setTimeout(speakNextSegment, 500);
+                    }
+                }
+                
+                // Start speaking the first segment
+                speakNextSegment();
+            } else {
+                console.warn("Speech synthesis not supported in this browser");
+                // Hide voice visualizer
+                voiceVisualizer.style.display = 'none';
+                // Show replay button as fallback
+                replayVoiceBtn.style.display = 'inline-block';
+            }
+
+            // 2. Typing Animation Setup
+            let charIndex = 0;
+            const typingSpeed = 0.06; // Slightly slower for longer text
+
+            const typingInterval = setInterval(() => {
+                if (charIndex < finalMessage.length) {
+                    typedTextElement.textContent += finalMessage.charAt(charIndex);
+                    charIndex++;
+                } else {
+                    clearInterval(typingInterval);
+                    // Hide the cursor after typing is complete
+                    typedTextElement.style.borderRight = 'none';
+                }
+            }, typingSpeed * 1000);
+        }
+        
+        // Replay voice button functionality
+        replayVoiceBtn.addEventListener('click', () => {
+            // Show voice visualizer
+            voiceVisualizer.style.display = 'flex';
+            
+            // Add playing animation to button
+            replayVoiceBtn.classList.add('playing');
+            
+            // Lower background music during voice narration (increased from 0.08 to 0.15)
+            const originalVolume = backgroundMusic.volume;
+            backgroundMusic.volume = 0.15; // Increased volume for better balance
+            
+            // Break the message into natural segments with pauses for a realistic male voice
+            // Updated with your new letter text
+            const segments = [
+                { text: "My dearest,", pause: 800, rate: 0.9, pitch: 0.85 },
+                { text: "I've spent hours trying to come up with something nice and creative to say to you today,", pause: 600, rate: 0.85, pitch: 0.8 },
+                { text: "but nothing sounded more true than wishing you a happy day,", pause: 700, rate: 0.85, pitch: 0.85 },
+                { text: "because happiness is the key word for success, contentment, joy and achievement.", pause: 900, rate: 0.8, pitch: 0.9 },
+                { text: "Today I wish a lot of things.", pause: 800, rate: 0.85, pitch: 0.8 },
+                { text: "I want you to receive this letter as a confirmation of my so often declared love.", pause: 900, rate: 0.85, pitch: 0.85 },
+                { text: "I want your soul to be filled with the hope to face the many years to come.", pause: 800, rate: 0.9, pitch: 0.85 },
+                { text: "I want you to have all the reasons in the world to smile and none to be sad.", pause: 800, rate: 0.85, pitch: 0.8 },
+                { text: "I want you to have the best, always.", pause: 900, rate: 0.9, pitch: 0.85 },
+                { text: "As you begin this new year, know that I'm right here beside you.", pause: 800, rate: 0.85, pitch: 0.85 },
+                { text: "You are my greatest adventure.", pause: 900, rate: 0.8, pitch: 0.9 },
+                { text: "May your birthday wish be the first of many beautiful things to come.", pause: 800, rate: 0.85, pitch: 0.8 },
+                { text: "Every day with you is a gift.", pause: 700, rate: 0.9, pitch: 0.85 },
+                { text: "Forever yours,", pause: 900, rate: 0.85, pitch: 0.8 },
+                { text: "Tyson", pause: 0, rate: 0.9, pitch: 0.85 }
+            ];
+            
+            // Get a realistic male voice
+            const maleVoice = getMaleVoice();
+            
+            // Function to speak segments sequentially
+            let segmentIndex = 0;
+            
+            function speakNextSegment() {
+                if (segmentIndex >= segments.length) {
+                    // All segments spoken
+                    // Restore background music volume
+                    backgroundMusic.volume = originalVolume;
+                    // Hide voice visualizer
+                    voiceVisualizer.style.display = 'none';
+                    // Remove playing animation
+                    replayVoiceBtn.classList.remove('playing');
+                    return;
+                }
+                
+                const segment = segments[segmentIndex];
+                const utterance = new SpeechSynthesisUtterance(segment.text);
+                
+                // Set voice
+                utterance.voice = maleVoice;
+                
+                // Set realistic male speech parameters
+                utterance.rate = segment.rate;
+                utterance.pitch = segment.pitch;
+                utterance.volume = 1.0; // Maximum volume
+                
+                // Add subtle variations for more natural speech
+                // Add a slight breath effect before important phrases
+                if (segmentIndex === 0 || segmentIndex === 4 || segmentIndex === 9 || segmentIndex === 12) {
+                    utterance.text = "..." + utterance.text;
+                }
+                
+                // Event handlers
+                utterance.onend = () => {
+                    // Move to next segment after pause
+                    segmentIndex++;
+                    setTimeout(speakNextSegment, segment.pause);
+                };
+                
+                utterance.onerror = (event) => {
+                    console.error("Speech synthesis error:", event.error);
+                    // Try to continue with next segment
+                    segmentIndex++;
+                    setTimeout(speakNextSegment, 500);
+                };
+                
+                // Speak the current segment
+                try {
+                    window.speechSynthesis.speak(utterance);
+                } catch (error) {
+                    console.error("Error starting speech synthesis:", error);
+                    // Try to continue with next segment
+                    segmentIndex++;
+                    setTimeout(speakNextSegment, 500);
+                }
+            }
+            
+            // Start speaking the first segment
+            speakNextSegment();
+        });
+
+
+        // --- BUTTON EVENT LISTENERS ---
+        document.getElementById('start-btn').addEventListener('click', function() {
+            // Add playing animation to button
+            this.classList.add('playing');
+            setTimeout(() => this.classList.remove('playing'), 600);
+            
+            // Create floating hearts
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    const rect = this.getBoundingClientRect();
+                    createFloatingHeart(
+                        rect.left + rect.width / 2 + (Math.random() - 0.5) * 50,
+                        rect.top + rect.height / 2
+                    );
+                }, i * 100);
+            }
+            
+            // Start background music at normal volume (0.4)
+            backgroundMusic.volume = 0.4;
+            backgroundMusic.play().catch(error => {
+                console.log("Audio playback failed initially (browser restriction):", error);
+            });
+
+            currentStep = 2;
+            showStep(currentStep);
+        });
+
+        document.getElementById('next-btn-2').addEventListener('click', function() {
+            // Add playing animation to button
+            this.classList.add('playing');
+            setTimeout(() => this.classList.remove('playing'), 600);
+            
+            currentStep = 3;
+            showStep(currentStep);
+        });
+
+        document.getElementById('next-btn-3').addEventListener('click', function() {
+            // Add playing animation to button
+            this.classList.add('playing');
+            setTimeout(() => this.classList.remove('playing'), 600);
+            
+            currentStep = 4;
+            showStep(currentStep);
+        });
+
+        document.getElementById('next-btn-4').addEventListener('click', function() {
+            // Add playing animation to button
+            this.classList.add('playing');
+            setTimeout(() => this.classList.remove('playing'), 600);
+            
+            currentStep = 5;
+            showStep(currentStep);
+        });
+        
+        // Seal Wish Button Logic
+        sealWishBtn.addEventListener('click', function() {
+            if (wishInput.value.trim() !== '') {
+                // Add playing animation to button
+                this.classList.add('playing');
+                setTimeout(() => this.classList.remove('playing'), 600);
+                
+                // Create floating hearts
+                for (let i = 0; i < 8; i++) {
+                    setTimeout(() => {
+                        const rect = this.getBoundingClientRect();
+                        createFloatingHeart(
+                            rect.left + rect.width / 2 + (Math.random() - 0.5) * 80,
+                            rect.top + rect.height / 2
+                        );
+                    }, i * 80);
+                }
+                
+                // Prevent further editing after wish is sealed
+                wishInput.disabled = true;
+                sealWishBtn.disabled = true;
+                sealWishBtn.textContent = 'Wish Sealed! 🔒';
+                sealWishBtn.style.background = '#10b981';
+                
+                // Add sealed class to container
+                wishBoxContainer.classList.add('sealed');
+
+                // Show confirmation message
+                gsap.to(wishConfirmation, { opacity: 1, duration: 0.7 });
+            } else {
+                // Shake animation for empty wish
+                gsap.to(wishInput, {
+                    x: 10,
+                    duration: 0.1,
+                    repeat: 5,
+                    yoyo: true,
+                    ease: "power2.inOut",
+                    onComplete: () => {
+                        gsap.set(wishInput, { x: 0 });
+                    }
+                });
+            }
+        });
+
+
+        // Confetti button
+        document.getElementById('confetti-btn').addEventListener('click', function() {
+            // Add playing animation to button
+            this.classList.add('playing');
+            setTimeout(() => this.classList.remove('playing'), 600);
+            
+            document.getElementById('confetti-btn').classList.remove('animate-pulse');
+
+            // 1. DIM BACKGROUND MUSIC (from 0.4 to 0.35) 
+            backgroundMusic.volume = 0.35;
+
+            // 2. RUN CONFETTI ANIMATION
+            confetti({
+                particleCount: 200, spread: 70, origin: { y: 0.6 },
+                colors: ['#ff0000', '#ff69b4', '#ff1493', '#ffc0cb']
+            });
+
+            setTimeout(() => {
+                confetti({
+                    particleCount: 50, spread: 60, origin: { y: 0.5 },
+                    shapes: ['heart'], colors: ['#ff0000', '#ff69b4']
+                });
+            }, 300);
+
+            setTimeout(() => {
+                confetti({
+                    particleCount: 30, angle: 60, spread: 55, origin: { x: 0 },
+                    shapes: ['heart'], colors: ['#ff0000', '#ff69b4']
+                });
+
+                confetti({
+                    particleCount: 30, angle: 120, spread: 55, origin: { x: 1 },
+                    shapes: ['heart'], colors: ['#ff0000', '#ff69b4']
+                });
+            }, 600);
+
+            // 3. HEART FADE ANIMATION
+            hearts.forEach(heart => {
+                gsap.killTweensOf([heart.position, heart.material]);
+                heart.position.set(heart.userData.originalX, heart.userData.originalY, heart.userData.originalZ);
+                heart.material.opacity = 0.9;
+
+                gsap.to(heart.position, {
+                    y: heart.position.y - 30, duration: 3, ease: "power1.out"
+                });
+
+                gsap.to(heart.material, {
+                    opacity: 0, duration: 3, ease: "power1.out"
+                });
+            });
+            
+            // 4. TRANSITION TO NEW PAGE AND START NARRATION
+            setTimeout(() => {
+                currentStep = 6;
+                showStep(currentStep);
+                // Add a small delay before starting the voice to ensure the page is fully rendered
+                setTimeout(() => {
+                    startTypingAnimation();
+                }, 700);
+            }, 1200); // Wait for 1.2 seconds while confetti animation happens
+        });
+
+        // Initial setup call
+        updateProgressBar();
+        
+        // Load voices when they become available
+        window.speechSynthesis.onvoiceschanged = () => {
+            console.log("Voices loaded:", window.speechSynthesis.getVoices().length);
+        };
+    </script>
+</body>
+
+</html>
